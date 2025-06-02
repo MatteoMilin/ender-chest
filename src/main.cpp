@@ -18,6 +18,8 @@ IPAddress apIP(192, 168, 4, 1);
 DNSServer dnsServer;
 WebServer webServer(80);
 
+Servo myservo;
+
 // ------------ WEB Server structure -----------
 struct Route {
     const char* method;
@@ -96,6 +98,7 @@ Route routes[] = {
 
             if (password == "admin123") {
                 redirectTo("/success.html");
+                myservo.write(90);
             } else {
                 redirectTo("/fail.html");
             }
@@ -164,8 +167,6 @@ std::vector<std::function<void()>> loadingFunctions = {
     },
 };
 
-Servo myservo;
-
 void setup() {
     Serial.begin(115200);
     Serial.println("Démarrage ESP32...");
@@ -174,12 +175,11 @@ void setup() {
         func();
     };
 
-    Serial.println("Finished loading");
-    myservo.attach(13);
-    myservo.write(180);
-}
+    myservo.attach(13); // Attache le servo au GPIO 13
+    myservo.write(0);
 
-int oui = 1;
+    Serial.println("Finished loading");
+}
 
 void loop() {
     // Process DNS requests and handle web server requests
