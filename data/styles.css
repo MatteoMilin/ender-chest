@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0 10px;
+  font-family: 'Press Start 2P', cursive;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #25003a, #000);
+  color: #00ffcc;
+}
+
+/* Thèmes par état */
+body.locked {
+  background: radial-gradient(circle at center, #2c003e 0%, #0c001a 100%);
+  color: #8b43ff;
+}
+
+body.success {
+  background: radial-gradient(circle at center, #25003a, #000);
+  color: #00ffcc;
+}
+
+body.fail {
+  background: radial-gradient(circle at center, #3a0000, #000);
+  color: #ff4d4d;
+}
+
+/* Icônes */
+.chest-icon,
+.success-icon,
+.fail-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 20px;
+  image-rendering: pixelated;
+}
+
+.success-icon {
+  animation: glow 1.5s infinite alternate;
+}
+
+.fail-icon {
+  filter: grayscale(1) brightness(0.5);
+  animation: flicker 0.8s infinite alternate;
+}
+
+/* Titres */
+h1, h2 {
+  font-size: 1rem;
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #8a65e2;
+  margin-bottom: 20px;
+}
+
+body.fail h1 {
+  text-shadow: 0 0 10px #ff0000, 0 0 20px #aa0000;
+}
+
+/* Zones de message */
+.message-box,
+form {
+  background-color: rgba(30, 0, 50, 0.85);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #00ffcc88;
+  max-width: 90vw;
+}
+
+body.fail .message-box {
+  background-color: rgba(50, 0, 0, 0.85);
+  border: 2px solid #ff0000;
+  box-shadow: 0 0 20px #ff000088;
+}
+
+body.success .message-box {
+  border: 2px solid #00ffcc;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 3px solid #00ffcc;
+}
+
+/* Input */
+input[type="password"] {
+  background-color: #1a0033;
+  border: 2px solid #00ffcc;
+  color: #ffffff;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 4px;
+  font-family: 'Press Start 2P', cursive;
+  text-align: center;
+}
+
+input::placeholder {
+  color: #8a65e2;
+}
+
+/* Boutons généraux */
+button,
+.button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 10px;
+  display: inline-block;
+}
+
+/* Boutons locked/success */
+body.locked button,
+body.success .button {
+  background-color: #00ffcc;
+  color: #1a0033;
+  box-shadow: 0 0 10px #00ffcc;
+}
+
+body.locked button:hover,
+body.success .button:hover {
+  background-color: #00ccaa;
+  box-shadow: 0 0 20px #00ffcc;
+}
+
+/* Boutons fail */
+body.fail .button {
+  background-color: #ff4d4d;
+  color: #1a0000;
+  box-shadow: 0 0 10px #ff4d4d;
+}
+
+body.fail .button:hover {
+  background-color: #ff2222;
+  box-shadow: 0 0 20px #ff4d4d;
+}
+
+/* Animations */
+@keyframes glow {
+  from { filter: drop-shadow(0 0 5px #8a65e2); }
+  to   { filter: drop-shadow(0 0 20px #00ffcc); }
+}
+
+@keyframes flicker {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .chest-icon,
+  .success-icon,
+  .fail-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  h1, h2 {
+    font-size: 0.85rem;
+  }
+
+  .button,
+  button {
+    font-size: 0.65rem;
+    padding: 8px 16px;
+  }
+}
+
+.message-box {
+  background-color: rgba(30, 0, 50, 0.85);
+  padding: 20px;
+  border: 2px solid #00ffcc;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #00ffcc88;
+  max-width: 90vw;
+}
+
+button {
+  background-color: #00ffcc;
+  color: #1a0033;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  font-family: 'Press Start 2P', cursive;
+  cursor: pointer;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+  box-shadow: 0 0 8px #00ffcc;
+}
+
+button:hover {
+  background-color: #00ccaa;
+  box-shadow: 0 0 12px #00ffcc, 0 0 20px #00ffcc;
+}

@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>ESP32 Hello</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Hello depuis le serveur Web de base !</h1>
-</body>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ender Chest - Accès Sécurisé</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <img src="ender_chest.png" alt="Ender Chest" class="chest-icon">
+    <h2>⚒️ ENDER CHEST LOCKED ⚒️</h2>
+    <form id="passwordForm">
+      <input type="password" id="passwordInput" name="password" placeholder="Mot de passe..." required>
+      <button type="submit">Déverrouiller</button>
+    </form>
+
+    <script>
+      document.getElementById("passwordForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const password = document.getElementById("passwordInput").value;
+
+        // fetch("https://example.com/submit", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json"
+        //   },
+        //   body: JSON.stringify({ password: password })
+        // })
+        // .then(response => {
+        //   if (response.ok) {
+        //     alert("Coffre déverrouillé !");
+        //   } else {
+        //     alert("Accès refusé.");
+        //   }
+        // })
+        // .catch(error => {
+        //   console.error("Erreur :", error);
+        //   alert("Erreur réseau.");
+        // });
+      });
+    </script>
+  </body>
 </html>
+
+
