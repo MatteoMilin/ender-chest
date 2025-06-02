@@ -37,6 +37,7 @@ String getContentType(String filename) {
     if (filename.endsWith(".js")) return "application/javascript";
     if (filename.endsWith(".png")) return "image/png";
     if (filename.endsWith(".jpg")) return "image/jpeg";
+    if (filename.endsWith(".ttf"))  return "font/ttf";
     return "text/plain";
 }
 
@@ -57,16 +58,49 @@ int handleFileRequest() {
         return -1;
     }
 }
+
+int serveFile(const String& path) {
+    if (LittleFS.exists(path)) {
+        File file = LittleFS.open(path, "r");
+        if (file) {
+            webServer.streamFile(file, getContentType(path));
+            file.close();
+            return 0; // Success
+        } else {
+            Serial.printf("Failed to open file: %s\n", path.c_str());
+            return -1; // File open error
+        }
+    } else {
+        Serial.printf("File not found: %s\n", path.c_str());
+        return -1; // File not found
+    }
+}
+
+int redirectTo(const String& path) {
+    webServer.sendHeader("Location", path, true);
+    webServer.send(302, "text/plain", "");
+    return 0; // Success
+}
 // -------- END OF WEB Server structure --------
 
 
 // Web routes
 Route routes[] = {
     {"GET", "/", []() {
-        webServer.send(200, "text/html", "<h1>Hello World</h1>");
+        serveFile("/index.html");
     }},
-    {"GET", "/beteu", []() {
-        webServer.send(200, "text/html", "<h1>Hello World, tah la beteu</h1>");
+    {"POST", "/open", []() {
+        if (webServer.hasArg("password")) {
+            String password = webServer.arg("password");
+
+            if (password == "admin123") {
+                redirectTo("/success.html");
+            } else {
+                redirectTo("/fail.html");
+            }
+        } else {
+            webServer.send(400, "text/plain", "Champ 'password' manquant");
+        }
     }},
 };
 
@@ -118,6 +152,8 @@ std::vector<std::function<void()>> loadingFunctions = {
         }
 
         webServer.onNotFound([]() {
+            Serial.printf("[debug] URI demandée: %s\n", webServer.uri().c_str());
+
             if (handleFileRequest() == 0) return; // Le fichier a déja été servi
 
             webServer.sendHeader("Location", String("http://") + apIP.toString(), true);
