@@ -3,6 +3,7 @@
 #include <WiFi.h>
 #include <DNSServer.h>
 #include <WebServer.h>
+#include <ESP32Servo.h>
 #include <map>
 
 #include <LittleFS.h>
@@ -163,7 +164,7 @@ std::vector<std::function<void()>> loadingFunctions = {
     },
 };
 
-
+Servo myservo;
 
 void setup() {
     Serial.begin(115200);
@@ -174,7 +175,11 @@ void setup() {
     };
 
     Serial.println("Finished loading");
+    myservo.attach(13);
+    myservo.write(180);
 }
+
+int oui = 1;
 
 void loop() {
     // Process DNS requests and handle web server requests
