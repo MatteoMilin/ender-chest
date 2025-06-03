@@ -46,6 +46,22 @@ String getContentType(String filename) {
     return "text/plain";
 }
 
+String readPassword() {
+    if (!LittleFS.exists("/password.txt")) return "admin123";
+    File file = LittleFS.open("/password.txt", "r");
+    String password = file.readStringUntil('\n');
+    file.close();
+    password.trim();
+    return password;
+}
+
+void writePassword(const String& newPassword) {
+    File file = LittleFS.open("/password.txt", "w");
+    file.println(newPassword);
+    file.close();
+}
+
+
 /**
  * @brief Handles file requests from the web server.
  *
@@ -97,7 +113,7 @@ Route routes[] = {
         if (webServer.hasArg("password")) {
             String password = webServer.arg("password");
 
-            if (password == "admin123") {
+            if (password == readPassword()) {
                 redirectTo("/success.html");
                 myservo.write(90);
                 // playWavFromLittleFS("../sound/OpenChestSound.wav");
@@ -108,6 +124,34 @@ Route routes[] = {
             webServer.send(400, "text/plain", "Champ 'password' manquant");
         }
     }},
+    {"POST", "/modify-password", []() {
+      if (webServer.hasArg("oldPassword") && webServer.hasArg("newPassword") && webServer.hasArg("confirmation")) {
+          String oldPassword = webServer.arg("oldPassword");
+          String newPassword = webServer.arg("newPassword");
+          String confirmation = webServer.arg("confirmation");
+          String currentPassword = readPassword();
+
+          if (oldPassword != currentPassword) {
+              webServer.send(403, "text/plain", "Ancien mot de passe incorrect.");
+              return;
+          }
+
+          if (newPassword != confirmation) {
+              webServer.send(400, "text/plain", "Le nouveau mot de passe ne correspond pas à la confirmation.");
+              return;
+          }
+
+          if (newPassword.length() < 4 || newPassword.length() > 32) {
+              webServer.send(400, "text/plain", "Le mot de passe doit faire entre 4 et 32 caractères.");
+              return;
+          }
+
+          writePassword(newPassword);
+          webServer.send(200, "text/plain", "Mot de passe changé avec succès !");
+      } else {
+          webServer.send(400, "text/plain", "Champs manquants.");
+      }
+  }},
 };
 
 // Loading functions
