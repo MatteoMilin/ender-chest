@@ -10,6 +10,7 @@
 #include <FS.h>
 
 #define DEBUG  // Comment this line to disable debug messages
+#define ANGLE 40
 
 // Configs
 const char* ssid = "ENDER CHEST";
@@ -17,6 +18,7 @@ const byte DNS_PORT = 53;
 IPAddress apIP(192, 168, 4, 1);
 DNSServer dnsServer;
 WebServer webServer(80);
+int can_open = 0;
 
 Servo myservo;
 
@@ -115,7 +117,10 @@ Route routes[] = {
 
             if (password == readPassword()) {
                 redirectTo("/success.html");
-                myservo.write(90);
+                if (can_open == 1)
+                    can_open = 2;
+                if (can_open == 0)
+                    can_open = 1;
             } else {
                 redirectTo("/fail.html");
             }
@@ -146,6 +151,18 @@ Route routes[] = {
             webServer.send(200, "text/plain", "Mot de passe changé avec succès !");
         } else {
             webServer.send(400, "text/plain", "Champs manquants.");
+        }
+  }},
+    {"POST", "/uid", []() {
+        if (webServer.hasArg("plain")) {
+            String data = webServer.arg("plain");
+            if (data == "true" && can_open == 1)
+                can_open = 2;
+            if (data == "true" && can_open == 0)
+                can_open = 1;
+            webServer.send(200, "text/plain", "Message received");
+        } else {
+            webServer.send(400, "text/plain", "No data received");
         }
   }},
 };
@@ -219,7 +236,6 @@ void setup() {
 
     myservo.attach(13); // Attache le servo au GPIO 13
     myservo.write(0);
-
     Serial.println("Finished loading");
 }
 
@@ -227,4 +243,8 @@ void loop() {
     // Process DNS requests and handle web server requests
     dnsServer.processNextRequest();
     webServer.handleClient();
+    if (can_open == 2) {
+        myservo.write(ANGLE);
+        can_open = 0;
+    }
 }
