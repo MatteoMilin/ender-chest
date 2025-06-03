@@ -20,7 +20,7 @@ WebServer webServer(80);
 
 Servo myservo;
 
-#define BUZZER_PIN 15
+#define BUZZER_PIN 25
 
 // ------------ WEB Server structure -----------
 struct Route {
@@ -87,25 +87,6 @@ int redirectTo(const String& path) {
     return 0; // Success
 }
 // -------- END OF WEB Server structure --------
-
-void playWavFromLittleFS(const char* filename) {
-    File f = LittleFS.open(filename, "r");
-    if (!f) {
-        Serial.println("Fichier audio introuvable !");
-        return;
-    }
-
-    for (int i = 0; i < 44; i++) f.read();
-
-    while (f.available()) {
-        uint8_t sample = f.read();
-        ledcWriteTone(0, 0);
-        ledcWrite(0, sample);
-        delayMicroseconds(125);
-    }
-    f.close();
-    ledcWrite(0, 0); // Arrêt du buzzer
-}
 
 // Web routes
 Route routes[] = {
@@ -199,12 +180,7 @@ void setup() {
     myservo.attach(13); // Attache le servo au GPIO 13
     myservo.write(0);
 
-    // ledcSetup(0, 8000, 8); // canal 0, 8kHz, 8 bits
-    // ledcAttachPin(BUZZER_PIN, 0);
-
-    // Serial.println("Finished loading");
-
-    // playWavFromLittleFS("../sound/OpenChestSound.wav");
+    Serial.println("Finished loading");
 }
 
 void loop() {
